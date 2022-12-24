@@ -1,5 +1,9 @@
 package com.softcode.employeemanagement.service;
 
-public interface EmployeeService {
+import com.softcode.employeemanagement.model.Employee;
 
+import java.util.List;
+
+public interface EmployeeService {
+    List<Employee> getEmployee();
 }
