@@ -26,6 +26,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
+    @Override
+    public Employee createEmployee(Employee employee) {
+        EmployeeEntity savedEmployee =  employeeRepository.save(mapToEntity(employee));
+        return mapToDto(savedEmployee);
+    }
+
     private Employee mapToDto(EmployeeEntity employeeEntity) {
         return modelMapper.map(employeeEntity, Employee.class);
     }

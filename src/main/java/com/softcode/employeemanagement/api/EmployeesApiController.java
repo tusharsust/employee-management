@@ -1,6 +1,7 @@
 package com.softcode.employeemanagement.api;
 
 import com.softcode.employeemanagement.model.Employee;
+import com.softcode.employeemanagement.model.PutEmployeeRequest;
 import com.softcode.employeemanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.annotation.Generated;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,5 +39,10 @@ public class EmployeesApiController implements EmployeesApi {
     @Override
     public ResponseEntity<List<Employee>> getEmployees() {
         return new ResponseEntity<>(employeeService.getEmployee(), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PutEmployeeRequest> postEmployee(@Valid Employee putEmployeeRequest) {
+        return new ResponseEntity<>(employeeService.createEmployee(putEmployeeRequest), HttpStatus.CREATED);
     }
 }

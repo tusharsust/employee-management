@@ -189,7 +189,7 @@ public interface EmployeesApi {
         consumes = { "application/json" }
     )
     default ResponseEntity<PutEmployeeRequest> postEmployee(
-        @Parameter(name = "PutEmployeeRequest", description = "", required = true) @Valid @RequestBody PutEmployeeRequest putEmployeeRequest
+        @Parameter(name = "PutEmployeeRequest", description = "", required = true) @Valid @RequestBody Employee putEmployeeRequest
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
