@@ -5,7 +5,7 @@ import com.softcode.employeemanagement.model.Employee;
 import java.util.List;
 
 public interface EmployeeService {
-    List<Employee> getEmployee();
+    List<Employee> getEmployees();
     Employee createEmployee(Employee employee);
     Employee updateEmployee(Employee employee);
 }

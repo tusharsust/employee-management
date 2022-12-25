@@ -38,7 +38,7 @@ public class EmployeesApiController implements EmployeesApi {
 
     @Override
     public ResponseEntity<List<Employee>> getEmployees() {
-        return new ResponseEntity<>(employeeService.getEmployee(), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getEmployees(), HttpStatus.OK);
     }
 
     @Override
