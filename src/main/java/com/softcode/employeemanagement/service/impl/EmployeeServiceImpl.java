@@ -32,6 +32,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         return mapToDto(savedEmployee);
     }
 
+    @Override
+    public Employee updateEmployee(Employee employee) {
+
+        employeeRepository.findById(employee.getId()).orElseThrow(RuntimeException::new);
+        EmployeeEntity updatedEmployeeEntity = employeeRepository.save(mapToEntity(employee));
+        return mapToDto(updatedEmployeeEntity);
+    }
+
     private Employee mapToDto(EmployeeEntity employeeEntity) {
         return modelMapper.map(employeeEntity, Employee.class);
     }

@@ -235,7 +235,7 @@ public interface EmployeesApi {
         consumes = { "application/json" }
     )
     default ResponseEntity<Void> putEmployee(
-        @Parameter(name = "PutEmployeeRequest", description = "", required = true) @Valid @RequestBody PutEmployeeRequest putEmployeeRequest
+        @Parameter(name = "PutEmployeeRequest", description = "", required = true) @Valid @RequestBody Employee putEmployeeRequest
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 

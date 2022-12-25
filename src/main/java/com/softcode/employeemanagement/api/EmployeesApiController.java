@@ -45,4 +45,10 @@ public class EmployeesApiController implements EmployeesApi {
     public ResponseEntity<PutEmployeeRequest> postEmployee(@Valid Employee putEmployeeRequest) {
         return new ResponseEntity<>(employeeService.createEmployee(putEmployeeRequest), HttpStatus.CREATED);
     }
+
+    @Override
+    public ResponseEntity<Void> putEmployee(@Valid Employee putEmployeeRequest) {
+        employeeService.updateEmployee(putEmployeeRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
