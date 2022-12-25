@@ -1,6 +1,8 @@
 package com.softcode.employeemanagement.service.impl;
 
 import com.softcode.employeemanagement.entity.EmployeeEntity;
+import com.softcode.employeemanagement.exception.EmployeeNotFoundException;
+import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
 import com.softcode.employeemanagement.service.EmployeeService;
@@ -35,7 +37,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee updateEmployee(Employee employee) {
 
-        employeeRepository.findById(employee.getId()).orElseThrow(RuntimeException::new);
+        if (employee.getId() == null || employee.getId() <= 0) {
+            throw new InvalidIdSuppliedException();
+        }
+        employeeRepository.findById(employee.getId()).orElseThrow(EmployeeNotFoundException::new);
         EmployeeEntity updatedEmployeeEntity = employeeRepository.save(mapToEntity(employee));
         return mapToDto(updatedEmployeeEntity);
     }
