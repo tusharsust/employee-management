@@ -23,4 +23,8 @@ public class EmployeeDutyEntity {
     private OffsetDateTime dutyStart;
 
     private OffsetDateTime dutyEnd;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private EmployeeEntity employee;
 }

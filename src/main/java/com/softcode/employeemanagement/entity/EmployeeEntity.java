@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -27,5 +29,8 @@ public class EmployeeEntity {
     private String email;
 
     private OffsetDateTime joiningDate;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EmployeeDutyEntity> employeeDuties = new HashSet<>();
 
 }
