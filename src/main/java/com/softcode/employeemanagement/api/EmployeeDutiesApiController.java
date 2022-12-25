@@ -1,5 +1,6 @@
 package com.softcode.employeemanagement.api;
 
+import com.softcode.employeemanagement.model.PostEmployeeDutyRequest;
 import com.softcode.employeemanagement.service.EmployeeDutyService;
 import com.softcode.employeemanagement.model.EmployeeDuty;
 import java.time.OffsetDateTime;
@@ -41,5 +42,10 @@ public class EmployeeDutiesApiController implements EmployeeDutiesApi {
     @Override
     public ResponseEntity<List<EmployeeDuty>> getEmployeeDuties(@Valid OffsetDateTime dutyStart, @Valid OffsetDateTime dutyEnd) {
         return new ResponseEntity<>(employeeDutyService.getEmployeeDuties(dutyStart, dutyEnd), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<PostEmployeeDutyRequest> postEmployeeDuty(@Valid EmployeeDuty postEmployeeDutyRequest) {
+        return new ResponseEntity<>(employeeDutyService.createEmployeeDuty(postEmployeeDutyRequest), HttpStatus.CREATED);
     }
 }

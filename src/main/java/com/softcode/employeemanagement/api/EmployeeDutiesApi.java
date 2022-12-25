@@ -194,7 +194,7 @@ public interface EmployeeDutiesApi {
         consumes = { "application/json" }
     )
     default ResponseEntity<PostEmployeeDutyRequest> postEmployeeDuty(
-        @Parameter(name = "PostEmployeeDutyRequest", description = "", required = true) @Valid @RequestBody PostEmployeeDutyRequest postEmployeeDutyRequest
+        @Parameter(name = "PostEmployeeDutyRequest", description = "", required = true) @Valid @RequestBody EmployeeDuty postEmployeeDutyRequest
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {

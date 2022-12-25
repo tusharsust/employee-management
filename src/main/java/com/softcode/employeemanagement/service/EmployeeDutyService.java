@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EmployeeDutyService {
     List<EmployeeDuty> getEmployeeDuties(OffsetDateTime dutyStart, OffsetDateTime dutyEnd);
+    EmployeeDuty createEmployeeDuty(EmployeeDuty employeeDuty);
 }
