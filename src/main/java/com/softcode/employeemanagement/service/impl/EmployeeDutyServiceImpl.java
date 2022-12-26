@@ -7,6 +7,7 @@ import com.softcode.employeemanagement.model.EmployeeDuty;
 import com.softcode.employeemanagement.repository.EmployeeDutyRepository;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
 import com.softcode.employeemanagement.service.EmployeeDutyService;
+import com.softcode.employeemanagement.service.MessageProducerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +21,16 @@ public class EmployeeDutyServiceImpl implements EmployeeDutyService {
     private final EmployeeDutyRepository employeeDutyRepository;
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
+    private final MessageProducerService messageProducerService;
 
     public EmployeeDutyServiceImpl(EmployeeDutyRepository employeeDutyRepository,
                                    EmployeeRepository employeeRepository,
-                                   ModelMapper modelMapper) {
+                                   ModelMapper modelMapper,
+                                   MessageProducerService messageProducerService) {
         this.employeeDutyRepository = employeeDutyRepository;
         this.employeeRepository = employeeRepository;
         this.modelMapper = modelMapper;
+        this.messageProducerService = messageProducerService;
     }
 
     @Override
@@ -47,6 +51,7 @@ public class EmployeeDutyServiceImpl implements EmployeeDutyService {
         employeeDutyEntity.setEmployee(employeeEntity);
 
         EmployeeDuty newEmployeeDuty = mapToDto(employeeDutyRepository.save(employeeDutyEntity));
+        messageProducerService.produceDutyChangeMessage(newEmployeeDuty);
 
         return newEmployeeDuty;
     }

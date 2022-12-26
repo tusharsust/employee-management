@@ -1,5 +1,6 @@
 package com.softcode.employeemanagement.model;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -22,7 +23,7 @@ import javax.annotation.Generated;
  */
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-12-24T21:30:51.511249+06:00[Asia/Dhaka]")
-public class EmployeeDuty implements PostEmployeeDutyRequest {
+public class EmployeeDuty implements PostEmployeeDutyRequest, Serializable {
 
   @JsonProperty("id")
   private Integer id;
