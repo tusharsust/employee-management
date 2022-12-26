@@ -31,8 +31,8 @@ public class EmployeeDutyServiceImpl implements EmployeeDutyService {
 
     @Override
     public List<EmployeeDuty> getEmployeeDuties(OffsetDateTime dutyStart, OffsetDateTime dutyEnd) {
-        if (dutyStart != null  && dutyEnd != null) {
-            return employeeDutyRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
+        if (dutyStart != null && dutyEnd != null) {
+            return employeeDutyRepository.findAllByDutyStartAfterAndDutyEndBefore(dutyStart, dutyEnd).stream().map(this::mapToDto).collect(Collectors.toList());
         } else {
             return employeeDutyRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
         }
