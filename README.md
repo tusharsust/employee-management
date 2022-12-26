@@ -21,6 +21,26 @@ http://localhost:8080/swagger-ui.html
 Change default port value in application.properties
 
 
+##The Technology Stack
+
+**Java Platform:** Java 8+
+
+**Frameworks:** Spring Framework and its portfolio projects String Boot, Spring Security(Basic), Spring Data JPA (Hibernate)
+
+**Build Tool:** Maven
+
+**IDE:** Intellij IDEA
+
+**Server:** Tomcat as embedded server
+
+**Database:** PostgreSQL 
+
+**REST Client:** Postman, Android Application
+
+**REST API documentation:** Swagger
+
+**Message Broker:** RabbitMQ
+
 ## Using Docker for PostgreSQL
 
 For example, to start a postgresql database in a docker container, run:
@@ -31,7 +51,7 @@ To stop it and remove the container, run:
 
     docker-compose -f src/main/docker/postgresql.yml down
 
-### Code quality
+## Code quality
 
 Sonar is used to analyse code quality. You can start a local Sonar server (accessible on http://localhost:9000) with:
 
@@ -52,3 +72,13 @@ If you need to re-run the Sonar phase, please be sure to specify at least the `i
 ```
 mvn initialize sonar:sonar
 ```
+
+## Using Docker for RabbitMQ
+
+You can start a local RabbitMQ (accessible on http://localhost:15672) with:
+
+    docker-compose -f src/main/docker/rabbitmq.yml up -d
+
+To stop it and remove the container, run:
+
+    docker-compose -f src/main/docker/rabbitmq.yml down
