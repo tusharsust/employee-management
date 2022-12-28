@@ -20,8 +20,7 @@ http://localhost:8080/swagger-ui.html
 
 Change default port value in application.properties
 
-
-##The Technology Stack
+## The Technology Stack
 
 **Java Platform:** Java 8+
 
