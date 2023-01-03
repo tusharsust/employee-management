@@ -1,23 +1,26 @@
 package com.softcode.employeemanagement.service.impl;
 
 import com.softcode.employeemanagement.entity.EmployeeEntity;
+import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
 
     EmployeeServiceImpl employeeService;
@@ -67,9 +70,6 @@ class EmployeeServiceImplTest {
         Employee employee = new Employee();
         employee.setId(1);
 
-        List<Employee> employeesData = new ArrayList<>();
-        employeesData.add(employee);
-
         when(employeeRepository.save(any())).thenReturn(savedEmployeeEntity);
         when(modelMapper.map(any(), eq(EmployeeEntity.class))).thenReturn(employeeEntity);
         when(modelMapper.map(any(), eq(Employee.class))).thenReturn(employee);
@@ -85,6 +85,48 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployee() {
+        EmployeeEntity employeeEntity = EmployeeEntity.builder()
+                .id(1)
+                .email("example@gmail.com")
+                .build();
 
+        EmployeeEntity savedEmployeeEntity = EmployeeEntity.builder().id(1)
+                .email("example@gmail.com")
+                .build();
+
+        Employee employee = new Employee();
+        employee.setId(1);
+        employee.setEmail("example@gmail.com");
+
+        when(employeeRepository.save(any())).thenReturn(savedEmployeeEntity);
+        when(employeeRepository.findById(any())).thenReturn(Optional.of(employeeEntity));
+        when(modelMapper.map(any(), eq(EmployeeEntity.class))).thenReturn(employeeEntity);
+        when(modelMapper.map(any(), eq(Employee.class))).thenReturn(employee);
+
+        Employee updateEmployee = employeeService.updateEmployee(employee);
+
+        assertEquals(savedEmployeeEntity.getEmail(), updateEmployee.getEmail());
+        verify(employeeRepository, times(1)).findById(employeeEntity.getId());
+        verify(employeeRepository, times(1)).save(employeeEntity);
+        verify(modelMapper, times(1)).map(savedEmployeeEntity, Employee.class);
+        verify(modelMapper, times(1)).map(employee, EmployeeEntity.class);
+
+    }
+
+    @Test
+    void updateEmployeeWithInvalidIdSuppliedException() {
+        InvalidIdSuppliedException thrown = Assertions.assertThrows(InvalidIdSuppliedException.class, () -> {
+            employeeService.updateEmployee(new Employee());
+        }, "Invalid Id supplied exception was expected");
+
+        Assertions.assertEquals("Invalid Id Supplied", thrown.getMessage());
+
+        InvalidIdSuppliedException thrown1 = Assertions.assertThrows(InvalidIdSuppliedException.class, () -> {
+            Employee employee = new Employee();
+            employee.setId(-1);
+            employeeService.updateEmployee(employee);
+        }, "Invalid Id supplied exception was expected");
+
+        Assertions.assertEquals("Invalid Id Supplied", thrown.getMessage());
     }
 }
