@@ -16,10 +16,10 @@ jobs:
         environment:
           - POSTGRES_USER=softcode
           - POSTGRES_PASSWORD=
-          command:
-            -p 5433
-          ports:
-            - 127.0.0.1:5433:5433
+        command:
+          -p 5433
+        ports:
+          - 127.0.0.1:5433:5433
 
     working_directory: ~/repo
 
