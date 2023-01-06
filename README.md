@@ -68,7 +68,7 @@ You can run a Sonar analysis with using the [sonar-scanner](https://docs.sonarqu
 Then, run a Sonar analysis:
 
 ```
-mvn clean verify sonar:sonar
+mvn clean verify sonar:sonar -Dsonar.login=admin -Dsonar.password=tushar
 ```
 
 If you need to re-run the Sonar phase, please be sure to specify at least the `initialize` phase since Sonar properties are loaded from the sonar-project.properties file.

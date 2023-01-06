@@ -48,4 +48,9 @@ public class EmployeeDutiesApiController implements EmployeeDutiesApi {
     public ResponseEntity<PostEmployeeDutyRequest> postEmployeeDuty(@Valid EmployeeDuty postEmployeeDutyRequest) {
         return new ResponseEntity<>(employeeDutyService.createEmployeeDuty(postEmployeeDutyRequest), HttpStatus.CREATED);
     }
+
+    @Override
+    public ResponseEntity<EmployeeDuty> getEmployeeDuty(Integer id) {
+        return new ResponseEntity<>(employeeDutyService.getEmployeeDutyById(id), HttpStatus.OK);
+    }
 }

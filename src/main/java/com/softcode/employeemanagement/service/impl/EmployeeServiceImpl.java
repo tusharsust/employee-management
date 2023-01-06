@@ -40,9 +40,24 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee.getId() == null || employee.getId() <= 0) {
             throw new InvalidIdSuppliedException();
         }
-        employeeRepository.findById(employee.getId()).orElseThrow(EmployeeNotFoundException::new);
+        if (!employeeRepository.findById(employee.getId()).isPresent()) {
+            throw new EmployeeNotFoundException();
+        }
+
         EmployeeEntity updatedEmployeeEntity = employeeRepository.save(mapToEntity(employee));
         return mapToDto(updatedEmployeeEntity);
+    }
+
+    @Override
+    public Employee getEmployeeById(Integer id) {
+
+        if (id == null || id <= 0) {
+            throw new InvalidIdSuppliedException();
+        }
+
+        EmployeeEntity employeeEntity = employeeRepository.findById(id).orElseThrow(EmployeeNotFoundException::new);
+
+        return mapToDto(employeeEntity);
     }
 
     private Employee mapToDto(EmployeeEntity employeeEntity) {

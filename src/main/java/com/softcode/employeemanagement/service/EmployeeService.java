@@ -8,4 +8,5 @@ public interface EmployeeService {
     List<Employee> getEmployees();
     Employee createEmployee(Employee employee);
     Employee updateEmployee(Employee employee);
+    Employee getEmployeeById(Integer id);
 }

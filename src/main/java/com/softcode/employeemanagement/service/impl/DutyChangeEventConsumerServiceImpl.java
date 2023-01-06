@@ -1,5 +1,6 @@
 package com.softcode.employeemanagement.service.impl;
 
+import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.model.EmployeeDuty;
 import com.softcode.employeemanagement.service.DutyChangeEventConsumerService;
 import com.softcode.employeemanagement.service.EmailService;
@@ -28,14 +29,15 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
     public void dutyChangeEventHandler(EmployeeDuty employeeDuty) {
         System.out.println("Duty Change Event: " + employeeDuty.toString());
 
-        //TODO Need to retrieve the employee details.
-        //TODO Need to retrieve the employee duty details.
+        EmployeeDuty dbEmployeeDuty = employeeDutyService.getEmployeeDutyById(employeeDuty.getEmployeeId());
+        Employee employee = employeeService.getEmployeeById(dbEmployeeDuty.getEmployeeId());
+
 
         String subject = "Your duty modification notification";
         String body = String.format("Mr/Mrs. %s\nYour duty has been modified\nStartTime: %s\nEndTime: %s\nThanks.",
-                "HARD_CODED_NAME", "HARDCODED_DUTY_START TIME", "HARDCODED_DUTY_END_TIME");
+                employee.getName(), dbEmployeeDuty.getDutyStart(), dbEmployeeDuty.getDutyEnd());
 
-        emailService.sendEmail("tushar.sust@gmail.com", subject, body);
+        emailService.sendEmail(employee.getEmail(), subject, body);
 
     }
 }

@@ -1,6 +1,7 @@
 package com.softcode.employeemanagement.service.impl;
 
 import com.softcode.employeemanagement.entity.EmployeeEntity;
+import com.softcode.employeemanagement.exception.EmployeeNotFoundException;
 import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
@@ -127,6 +128,15 @@ class EmployeeServiceImplTest {
             employeeService.updateEmployee(employee);
         }, "Invalid Id supplied exception was expected");
 
-        Assertions.assertEquals("Invalid Id Supplied", thrown.getMessage());
+        Assertions.assertEquals("Invalid Id Supplied", thrown1.getMessage());
+
+
+        EmployeeNotFoundException thrown2 = Assertions.assertThrows(EmployeeNotFoundException.class, () -> {
+            Employee employee = new Employee();
+            employee.setId(23);
+            employeeService.updateEmployee(employee);
+        }, "Employee not found exception was expected");
+
+        Assertions.assertEquals("Employee not found", thrown2.getMessage());
     }
 }

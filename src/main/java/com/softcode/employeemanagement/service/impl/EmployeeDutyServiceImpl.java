@@ -2,7 +2,9 @@ package com.softcode.employeemanagement.service.impl;
 
 import com.softcode.employeemanagement.entity.EmployeeDutyEntity;
 import com.softcode.employeemanagement.entity.EmployeeEntity;
+import com.softcode.employeemanagement.exception.EmployeeDutyNotFoundException;
 import com.softcode.employeemanagement.exception.EmployeeNotFoundException;
+import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
 import com.softcode.employeemanagement.model.EmployeeDuty;
 import com.softcode.employeemanagement.repository.EmployeeDutyRepository;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
@@ -54,6 +56,17 @@ public class EmployeeDutyServiceImpl implements EmployeeDutyService {
         messageProducerService.produceDutyChangeMessage(newEmployeeDuty);
 
         return newEmployeeDuty;
+    }
+
+    @Override
+    public EmployeeDuty getEmployeeDutyById(Integer id) {
+
+        if (id == null || id <= 0) {
+            throw new InvalidIdSuppliedException();
+        }
+
+        EmployeeDutyEntity employeeDutyEntity = employeeDutyRepository.findById(id).orElseThrow(EmployeeDutyNotFoundException::new);
+        return mapToDto(employeeDutyEntity);
     }
 
     private EmployeeDuty mapToDto(EmployeeDutyEntity employeeDutyEntity) {
