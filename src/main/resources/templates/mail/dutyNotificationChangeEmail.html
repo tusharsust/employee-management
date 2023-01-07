@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+<h3 th:text="${name}">Dear Tushar,</h3>
+
+<p th:text="${line1}" >Please note that the following duty schedule has been assigned to you</p>
+
+<table border="1" cellpadding="1" cellspacing="1" style="width:500px;">
+    <tbody>
+    <tr>
+        <td>Duty Start Time</td>
+        <td th:text="${startTime}">10:30 10 JAN, 2023</td>
+    </tr>
+    <tr>
+        <td>Duty End Time</td>
+        <td th:text="${endTime}">10:3010 JAN, 2023</td>
+    </tr>
+    </tbody>
+</table>
+
+<p><strong>Thanks,</strong></p>
+
+<p><strong>Employee Management Team</strong></p>
+</body>

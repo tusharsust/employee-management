@@ -1,6 +1,7 @@
 package com.softcode.employeemanagement.service.impl;
 
 import com.softcode.employeemanagement.model.DutyChangeEvent;
+import com.softcode.employeemanagement.model.DutyChangeType;
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.model.EmployeeDuty;
 import com.softcode.employeemanagement.service.DutyChangeEventConsumerService;
@@ -33,12 +34,18 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
         EmployeeDuty dbEmployeeDuty = employeeDutyService.getEmployeeDutyById(dutyChangeEvent.getEmployeeDutyId());
         Employee employee = employeeService.getEmployeeById(dbEmployeeDuty.getEmployeeId());
 
+        String subject = "";
+        String emailLine = "";
 
-        String subject = "Your duty modification notification";
-        String body = String.format("Mr/Mrs. %s\nYour duty has been modified\nStartTime: %s\nEndTime: %s\nThanks.",
-                employee.getName(), dbEmployeeDuty.getDutyStart(), dbEmployeeDuty.getDutyEnd());
+        if (dutyChangeEvent.getDutyChangeType() == DutyChangeType.CREATED) {
+            subject = "Duty added notification!";
+            emailLine = "Please note that the following duty schedule has been assigned to you";
+        } else {
+            subject = "Duty updated notification!";
+            emailLine = "Please note that the following duty schedule of you has been updated";
+        }
 
-        emailService.sendEmail(employee.getEmail(), subject, body);
+        emailService.sendDutyChangeEmail(employee.getEmail(), subject, employee.getName(), dbEmployeeDuty.getDutyStart().toString(), dbEmployeeDuty.getDutyEnd().toString(), emailLine);
 
     }
 }
