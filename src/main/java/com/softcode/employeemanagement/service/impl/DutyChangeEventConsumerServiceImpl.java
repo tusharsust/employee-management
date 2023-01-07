@@ -8,12 +8,16 @@ import com.softcode.employeemanagement.service.DutyChangeEventConsumerService;
 import com.softcode.employeemanagement.service.EmailService;
 import com.softcode.employeemanagement.service.EmployeeDutyService;
 import com.softcode.employeemanagement.service.EmployeeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 @Service
 @RabbitListener(queues = "${queue.name}")
 public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsumerService {
+
+    private final Logger log = LoggerFactory.getLogger(DutyChangeEventConsumerServiceImpl.class);
 
     private final EmailService emailService;
     private final EmployeeService employeeService;
@@ -29,7 +33,8 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
 
     @Override
     public void dutyChangeEventHandler(DutyChangeEvent dutyChangeEvent) {
-        System.out.println("Duty Change Event: " + dutyChangeEvent.toString());
+
+        log.debug("Duty Change Event Received: EmployeeDuty Id: {} Event Type: {}", dutyChangeEvent.getEmployeeDutyId(), dutyChangeEvent.getDutyChangeType());
 
         EmployeeDuty dbEmployeeDuty = employeeDutyService.getEmployeeDutyById(dutyChangeEvent.getEmployeeDutyId());
         Employee employee = employeeService.getEmployeeById(dbEmployeeDuty.getEmployeeId());
@@ -46,6 +51,5 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
         }
 
         emailService.sendDutyChangeEmail(employee.getEmail(), subject, employee.getName(), dbEmployeeDuty.getDutyStart().toString(), dbEmployeeDuty.getDutyEnd().toString(), emailLine);
-
     }
 }
