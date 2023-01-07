@@ -57,4 +57,10 @@ public class EmployeesApiController implements EmployeesApi {
         Employee employee = employeeService.getEmployeeById(id);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> deleteEmployee(Integer id) {
+        employeeService.deleteEmployee(id);
+        return ResponseEntity.ok().build();
+    }
 }

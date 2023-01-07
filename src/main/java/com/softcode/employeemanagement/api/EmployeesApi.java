@@ -238,7 +238,6 @@ public interface EmployeesApi {
         @Parameter(name = "PutEmployeeRequest", description = "", required = true) @Valid @RequestBody Employee putEmployeeRequest
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
     }
 
 }

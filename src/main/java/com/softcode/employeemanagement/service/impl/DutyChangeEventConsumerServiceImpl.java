@@ -1,5 +1,6 @@
 package com.softcode.employeemanagement.service.impl;
 
+import com.softcode.employeemanagement.model.DutyChangeEvent;
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.model.EmployeeDuty;
 import com.softcode.employeemanagement.service.DutyChangeEventConsumerService;
@@ -26,10 +27,10 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
     }
 
     @Override
-    public void dutyChangeEventHandler(EmployeeDuty employeeDuty) {
-        System.out.println("Duty Change Event: " + employeeDuty.toString());
+    public void dutyChangeEventHandler(DutyChangeEvent dutyChangeEvent) {
+        System.out.println("Duty Change Event: " + dutyChangeEvent.toString());
 
-        EmployeeDuty dbEmployeeDuty = employeeDutyService.getEmployeeDutyById(employeeDuty.getEmployeeId());
+        EmployeeDuty dbEmployeeDuty = employeeDutyService.getEmployeeDutyById(dutyChangeEvent.getEmployeeDutyId());
         Employee employee = employeeService.getEmployeeById(dbEmployeeDuty.getEmployeeId());
 
 

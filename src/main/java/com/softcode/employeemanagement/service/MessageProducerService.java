@@ -1,8 +1,9 @@
 package com.softcode.employeemanagement.service;
 
-import com.softcode.employeemanagement.model.EmployeeDuty;
+
+import com.softcode.employeemanagement.model.DutyChangeEvent;
 
 public interface MessageProducerService {
-    String produceDutyChangeMessage(EmployeeDuty employeeDuty);
+    String produceDutyChangeMessage(DutyChangeEvent dutyChangeEvent);
 
 }

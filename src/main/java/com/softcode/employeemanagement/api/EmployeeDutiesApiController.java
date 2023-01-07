@@ -53,4 +53,16 @@ public class EmployeeDutiesApiController implements EmployeeDutiesApi {
     public ResponseEntity<EmployeeDuty> getEmployeeDuty(Integer id) {
         return new ResponseEntity<>(employeeDutyService.getEmployeeDutyById(id), HttpStatus.OK);
     }
+
+    @Override
+    public ResponseEntity<Void> deleteEmployeeDuty(Integer id) {
+        employeeDutyService.deleteEmployeeDutyById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> putEmployeeDuty(@Valid EmployeeDuty employeeDuty) {
+        employeeDutyService.updateEmployeeDuty(employeeDuty);
+        return ResponseEntity.ok().build();
+    }
 }

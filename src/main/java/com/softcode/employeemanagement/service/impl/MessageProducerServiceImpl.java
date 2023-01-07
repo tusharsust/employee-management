@@ -1,5 +1,6 @@
 package com.softcode.employeemanagement.service.impl;
 
+import com.softcode.employeemanagement.model.DutyChangeEvent;
 import com.softcode.employeemanagement.model.EmployeeDuty;
 import com.softcode.employeemanagement.service.MessageProducerService;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -22,8 +23,8 @@ public class MessageProducerServiceImpl implements MessageProducerService {
     }
 
     @Override
-    public String produceDutyChangeMessage(EmployeeDuty employeeDuty) {
-        template.convertAndSend(exchange, routingKey, employeeDuty);
+    public String produceDutyChangeMessage(DutyChangeEvent dutyChangeEvent) {
+        template.convertAndSend(exchange, routingKey, dutyChangeEvent);
         return "OK! Message has been produced successfully!";
     }
 }

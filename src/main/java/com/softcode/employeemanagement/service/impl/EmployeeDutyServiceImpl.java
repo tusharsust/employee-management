@@ -5,6 +5,8 @@ import com.softcode.employeemanagement.entity.EmployeeEntity;
 import com.softcode.employeemanagement.exception.EmployeeDutyNotFoundException;
 import com.softcode.employeemanagement.exception.EmployeeNotFoundException;
 import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
+import com.softcode.employeemanagement.model.DutyChangeEvent;
+import com.softcode.employeemanagement.model.DutyChangeType;
 import com.softcode.employeemanagement.model.EmployeeDuty;
 import com.softcode.employeemanagement.repository.EmployeeDutyRepository;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
@@ -53,7 +55,12 @@ public class EmployeeDutyServiceImpl implements EmployeeDutyService {
         employeeDutyEntity.setEmployee(employeeEntity);
 
         EmployeeDuty newEmployeeDuty = mapToDto(employeeDutyRepository.save(employeeDutyEntity));
-        messageProducerService.produceDutyChangeMessage(newEmployeeDuty);
+        DutyChangeEvent dutyChangeEvent = DutyChangeEvent.builder()
+                .employeeDutyId(newEmployeeDuty.getId())
+                .dutyChangeType(DutyChangeType.CREATED)
+                .build();
+
+        messageProducerService.produceDutyChangeMessage(dutyChangeEvent);
 
         return newEmployeeDuty;
     }
@@ -67,6 +74,44 @@ public class EmployeeDutyServiceImpl implements EmployeeDutyService {
 
         EmployeeDutyEntity employeeDutyEntity = employeeDutyRepository.findById(id).orElseThrow(EmployeeDutyNotFoundException::new);
         return mapToDto(employeeDutyEntity);
+    }
+
+    @Override
+    public void deleteEmployeeDutyById(Integer id) {
+        if (id == null || id <= 0) {
+            throw new InvalidIdSuppliedException();
+        }
+
+        if (employeeDutyRepository.findById(id).isEmpty()) {
+            throw new EmployeeDutyNotFoundException();
+        }
+    }
+
+    @Override
+    public EmployeeDuty updateEmployeeDuty(EmployeeDuty employeeDuty) {
+
+        if (employeeDuty.getId() == null || employeeDuty.getId() <= 0) {
+            throw new InvalidIdSuppliedException();
+        }
+        EmployeeDutyEntity dbEmployeeDutyEntity = employeeDutyRepository.findById(employeeDuty.getId()).orElseThrow(EmployeeDutyNotFoundException::new);
+
+        if (employeeDutyRepository.findById(dbEmployeeDutyEntity.getId()).isEmpty()) {
+            throw new EmployeeDutyNotFoundException();
+        }
+        if (employeeRepository.findById(employeeDuty.getEmployeeId()).isEmpty()) {
+            throw new EmployeeNotFoundException();
+        }
+
+        EmployeeDuty newEmployeeDuty = mapToDto(employeeDutyRepository.save(mapToEntity(employeeDuty)));
+
+        DutyChangeEvent dutyChangeEvent = DutyChangeEvent.builder()
+                .employeeDutyId(newEmployeeDuty.getId())
+                .dutyChangeType(DutyChangeType.UPDATED)
+                .build();
+
+        messageProducerService.produceDutyChangeMessage(dutyChangeEvent);
+
+        return employeeDuty;
     }
 
     private EmployeeDuty mapToDto(EmployeeDutyEntity employeeDutyEntity) {

@@ -9,4 +9,5 @@ public interface EmployeeService {
     Employee createEmployee(Employee employee);
     Employee updateEmployee(Employee employee);
     Employee getEmployeeById(Integer id);
+    void deleteEmployee(Integer id);
 }
