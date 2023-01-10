@@ -1,13 +1,8 @@
 package com.softcode.employeemanagement.service.impl;
 
-import com.softcode.employeemanagement.model.DutyChangeEvent;
-import com.softcode.employeemanagement.model.DutyChangeType;
-import com.softcode.employeemanagement.model.Employee;
-import com.softcode.employeemanagement.model.EmployeeDuty;
-import com.softcode.employeemanagement.service.DutyChangeEventConsumerService;
-import com.softcode.employeemanagement.service.EmailService;
-import com.softcode.employeemanagement.service.EmployeeDutyService;
-import com.softcode.employeemanagement.service.EmployeeService;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.softcode.employeemanagement.model.*;
+import com.softcode.employeemanagement.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -22,13 +17,16 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
     private final EmailService emailService;
     private final EmployeeService employeeService;
     private final EmployeeDutyService employeeDutyService;
+    private final FirebaseMessagingService firebaseMessagingService;
 
     public DutyChangeEventConsumerServiceImpl(EmailService emailService,
                                               EmployeeService employeeService,
-                                              EmployeeDutyService employeeDutyService) {
+                                              EmployeeDutyService employeeDutyService,
+                                              FirebaseMessagingService firebaseMessagingService) {
         this.emailService = emailService;
         this.employeeService = employeeService;
         this.employeeDutyService = employeeDutyService;
+        this.firebaseMessagingService = firebaseMessagingService;
     }
 
     @Override
@@ -39,10 +37,34 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
         EmployeeDuty dbEmployeeDuty = employeeDutyService.getEmployeeDutyById(dutyChangeEvent.getEmployeeDutyId());
         Employee employee = employeeService.getEmployeeById(dbEmployeeDuty.getEmployeeId());
 
-        String subject = "";
-        String emailLine = "";
+        //Send mail
+//        sendMail(employee, dbEmployeeDuty, dutyChangeEvent.getDutyChangeType());
 
-        if (dutyChangeEvent.getDutyChangeType() == DutyChangeType.CREATED) {
+        //Send Push Notification
+        sendPushNotification(employee, dbEmployeeDuty, dutyChangeEvent.getDutyChangeType());
+    }
+
+    private void sendPushNotification(Employee employee, EmployeeDuty employeeDuty, DutyChangeType dutyChangeType) {
+
+        Note note = Note.builder()
+                .content(dutyChangeType == DutyChangeType.CREATED ? "New duty have been added to you. Please check your schedule." : "Your duty has been changed. Please check your schedule.")
+                .subject(dutyChangeType == DutyChangeType.CREATED ? "Duty added notification!" : "Duty added notification!")
+                .build();
+        String deviceToken = "diSpdASIR5W8pzHV-ifT12:APA91bFmDgmQ9v_claR6iyRS5MIbEBooZtHULj8_1qSlZy6LqOj30a1q5gMSAKpocmWk88QFtjEQs9w2XaLUnYtxJyXr7fgiyBMsyrHdzHyL710FVmioF86QZIZz-qToa64hPnJLkL4z"; // it should be comes from employee object
+
+        try {
+            firebaseMessagingService.sendNotification(note, deviceToken);
+        } catch (FirebaseMessagingException e) {
+            log.warn("Push notification could not be sent to user '{}'", employee.getEmail(), e);
+        }
+
+    }
+
+    private void sendMail(Employee employee, EmployeeDuty employeeDuty, DutyChangeType dutyChangeType) {
+        String subject;
+        String emailLine;
+
+        if (dutyChangeType == DutyChangeType.CREATED) {
             subject = "Duty added notification!";
             emailLine = "Please note that the following duty schedule has been assigned to you";
         } else {
@@ -50,6 +72,6 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
             emailLine = "Please note that the following duty schedule of you has been updated";
         }
 
-        emailService.sendDutyChangeEmail(employee.getEmail(), subject, employee.getName(), dbEmployeeDuty.getDutyStart().toString(), dbEmployeeDuty.getDutyEnd().toString(), emailLine);
+        emailService.sendDutyChangeEmail(employee.getEmail(), subject, employee.getName(), employeeDuty.getDutyStart().toString(), employeeDuty.getDutyEnd().toString(), emailLine);
     }
 }

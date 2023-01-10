@@ -1,0 +1,39 @@
+package com.softcode.employeemanagement.service.impl;
+
+
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import com.softcode.employeemanagement.model.Note;
+import com.softcode.employeemanagement.service.FirebaseMessagingService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class FirebaseMessagingServiceImpl implements FirebaseMessagingService {
+
+    private final FirebaseMessaging firebaseMessaging;
+
+    public FirebaseMessagingServiceImpl(FirebaseMessaging firebaseMessaging) {
+        this.firebaseMessaging = firebaseMessaging;
+    }
+
+    @Override
+    public String sendNotification(Note note, String token) throws FirebaseMessagingException {
+
+        Notification notification = Notification
+                .builder()
+                .setTitle(note.getSubject())
+                .setBody(note.getContent())
+                .build();
+
+        Message message = Message
+                .builder()
+                .setToken(token)
+                .setNotification(notification)
+//                .putAllData(note.getData())
+                .build();
+
+        return firebaseMessaging.send(message);
+    }
+}
