@@ -63,4 +63,9 @@ public class EmployeesApiController implements EmployeesApi {
         employeeService.deleteEmployee(id);
         return ResponseEntity.ok().build();
     }
+
+    @Override
+    public ResponseEntity<String> postUpdateEmployeeDeviceToken(@Valid String deviceToken) {
+        return new ResponseEntity<>(employeeService.updateDeviceToken(deviceToken), HttpStatus.OK);
+    }
 }

@@ -5,6 +5,5 @@ import com.softcode.employeemanagement.model.SignUpDto;
 
 public interface AuthService {
     String login(LoginDto loginDto);
-
     String register(SignUpDto signUpDto);
 }

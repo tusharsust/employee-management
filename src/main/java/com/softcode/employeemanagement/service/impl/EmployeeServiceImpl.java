@@ -1,12 +1,16 @@
 package com.softcode.employeemanagement.service.impl;
 
 import com.softcode.employeemanagement.entity.EmployeeEntity;
+import com.softcode.employeemanagement.exception.APIException;
 import com.softcode.employeemanagement.exception.EmployeeNotFoundException;
 import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
+import com.softcode.employeemanagement.repository.UserRepository;
+import com.softcode.employeemanagement.security.JwtTokenProvider;
 import com.softcode.employeemanagement.service.EmployeeService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,14 +21,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, ModelMapper modelMapper) {
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository, ModelMapper modelMapper, UserRepository userRepository) {
         this.employeeRepository = employeeRepository;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<Employee> getEmployees() {
+        JwtTokenProvider.getCurrentUserLogin().ifPresent(s -> System.out.println("Current User:" + s));
         return employeeRepository.findAll().stream().map(this::mapToDto).collect(Collectors.toList());
     }
 
@@ -70,6 +77,24 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new EmployeeNotFoundException();
         }
         employeeRepository.deleteById(id);
+    }
+
+    @Override
+    public String updateDeviceToken(String deviceToken) {
+
+            EmployeeEntity employee = JwtTokenProvider.getCurrentUserLogin()
+                    .flatMap(userRepository::findByEmail)
+                    .flatMap(employeeRepository::findByUser)
+                    .orElseThrow(EmployeeNotFoundException::new);
+
+        if (deviceToken.isEmpty()) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Device Token Invalid");
+        }
+
+        employee.setDeviceToken(deviceToken);
+        employeeRepository.save(employee);
+
+        return "Device token saved successfully!!";
     }
 
     private Employee mapToDto(EmployeeEntity employeeEntity) {

@@ -240,4 +240,48 @@ public interface EmployeesApi {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    /**
+     * POST /employees : Add new employee record
+     *
+     *
+     * @param putEmployeeRequest  (required)
+     * @return Successfully created employee record(s) (status code 201)
+     *         or Invalid input (status code 405)
+     */
+    @Operation(
+            operationId = "postEmployee",
+            summary = "Add new employee record",
+            tags = { "Employees" },
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Successfully created employee record(s)", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = PutEmployeeRequest.class))
+                    }),
+                    @ApiResponse(responseCode = "405", description = "Invalid input")
+            },
+            security = {
+                    @SecurityRequirement(name = "ApiKeyAuth")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/employees/update-device-token",
+            produces = { "application/json" },
+            consumes = { "application/json" }
+    )
+    default ResponseEntity<String> postUpdateEmployeeDeviceToken(
+            @Parameter(name = "String", description = "", required = true) @Valid @RequestBody String deviceToken
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "null";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
 }

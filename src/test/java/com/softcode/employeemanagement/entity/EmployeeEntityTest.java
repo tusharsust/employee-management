@@ -45,10 +45,10 @@ class EmployeeEntityTest {
     }
 
     @Test
-    void getEmail() {
-        String email = "test@example.com";
-        employeeEntity.setEmail(email);
-        assertEquals(email, employeeEntity.getEmail());
+    void getUser() {
+        UserEntity user = new UserEntity();
+        employeeEntity.setUser(user);
+        assertEquals(user, employeeEntity.getUser());
     }
 
     @Test

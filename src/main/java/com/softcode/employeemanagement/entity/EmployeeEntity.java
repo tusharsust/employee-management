@@ -24,9 +24,13 @@ public class EmployeeEntity {
 
     private String phone;
 
-    private String email;
-
     private OffsetDateTime joiningDate;
+
+    private String deviceToken;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private UserEntity user;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EmployeeDutyEntity> employeeDuties = new HashSet<>();

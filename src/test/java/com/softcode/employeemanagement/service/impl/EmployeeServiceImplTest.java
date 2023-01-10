@@ -5,6 +5,7 @@ import com.softcode.employeemanagement.exception.EmployeeNotFoundException;
 import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
+import com.softcode.employeemanagement.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,12 +31,15 @@ class EmployeeServiceImplTest {
     EmployeeRepository employeeRepository;
 
     @Mock
+    UserRepository userRepository;
+
+    @Mock
     ModelMapper modelMapper;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        employeeService = new EmployeeServiceImpl(employeeRepository, modelMapper);
+        employeeService = new EmployeeServiceImpl(employeeRepository, modelMapper, userRepository);
     }
 
     @Test
@@ -88,11 +92,11 @@ class EmployeeServiceImplTest {
     void updateEmployee() {
         EmployeeEntity employeeEntity = EmployeeEntity.builder()
                 .id(1)
-                .email("example@gmail.com")
+                .name("example@gmail.com")
                 .build();
 
         EmployeeEntity savedEmployeeEntity = EmployeeEntity.builder().id(1)
-                .email("example@gmail.com")
+                .name("example@gmail.com")
                 .build();
 
         Employee employee = new Employee();
@@ -106,7 +110,7 @@ class EmployeeServiceImplTest {
 
         Employee updateEmployee = employeeService.updateEmployee(employee);
 
-        assertEquals(savedEmployeeEntity.getEmail(), updateEmployee.getEmail());
+        assertEquals(savedEmployeeEntity.getName(), updateEmployee.getEmail());
         verify(employeeRepository, times(1)).findById(employeeEntity.getId());
         verify(employeeRepository, times(1)).save(employeeEntity);
         verify(modelMapper, times(1)).map(savedEmployeeEntity, Employee.class);

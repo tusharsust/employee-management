@@ -3,9 +3,12 @@ package com.softcode.employeemanagement.api;
 import com.softcode.employeemanagement.model.JWTAuthResponse;
 import com.softcode.employeemanagement.model.LoginDto;
 import com.softcode.employeemanagement.model.SignUpDto;
+import com.softcode.employeemanagement.security.AuthoritiesConstants;
 import com.softcode.employeemanagement.service.AuthService;
+import com.softcode.employeemanagement.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +20,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, EmployeeService employeeService) {
         this.authService = authService;
     }
 
@@ -31,6 +34,7 @@ public class AuthController {
     }
 
     // Build Register REST API
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     @PostMapping(value = {"/register", "/signup"})
     public ResponseEntity<String> register(@RequestBody SignUpDto signUpDto){
         String response = authService.register(signUpDto);
