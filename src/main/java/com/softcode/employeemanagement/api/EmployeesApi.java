@@ -7,6 +7,7 @@ package com.softcode.employeemanagement.api;
 
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.model.PutEmployeeRequest;
+import com.softcode.employeemanagement.model.UpdateDeviceTokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -269,12 +270,55 @@ public interface EmployeesApi {
             consumes = { "application/json" }
     )
     default ResponseEntity<String> postUpdateEmployeeDeviceToken(
-            @Parameter(name = "String", description = "", required = true) @Valid @RequestBody String deviceToken
+            @Parameter(name = "UpdateDeviceTokenDto", description = "", required = true)  @Valid @RequestBody UpdateDeviceTokenDto updateDeviceToken
     ) {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "null";
+                    ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+    /**
+     * GET /employees/get-profile : Get employee by login
+     *
+     *
+     * @param id  (required)
+     * @return Employee (status code 200)
+     *         or Invalid ID supplied (status code 400)
+     *         or Employee not found (status code 404)
+     */
+    @Operation(
+            operationId = "getEmployee",
+            summary = "Get employee by login",
+            tags = { "Employees" },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Employee", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = Employee.class))
+                    }),
+                    @ApiResponse(responseCode = "400", description = "Invalid login"),
+                    @ApiResponse(responseCode = "404", description = "Employee not found")
+            },
+            security = {
+                    @SecurityRequirement(name = "ApiKeyAuth")
+            }
+    )
+    @RequestMapping(
+            method = RequestMethod.GET,
+            value = "/employees/get-profile",
+            produces = { "application/json" }
+    )
+    default ResponseEntity<Employee> getEmployeeProfile() {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"phone\" : \"+46701234567\", \"name\" : \"John Doe\", \"joiningDate\" : \"2000-01-23T04:56:07.000+00:00\", \"id\" : 10000000, \"email\" : \"john.doe@softcode.se\" }";
                     ApiUtil.setExampleResponse(request, "application/json", exampleString);
                     break;
                 }

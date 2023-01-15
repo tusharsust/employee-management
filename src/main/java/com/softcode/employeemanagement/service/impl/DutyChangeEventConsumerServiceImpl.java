@@ -43,7 +43,7 @@ public class DutyChangeEventConsumerServiceImpl implements DutyChangeEventConsum
         EmployeeDutyEntity employeeDuty = employeeDutyRepository.findById(dutyChangeEvent.getEmployeeDutyId())
                 .orElseThrow(EmployeeDutyNotFoundException::new);
 
-        EmployeeEntity employee = employeeRepository.findById(dutyChangeEvent.getEmployeeDutyId())
+        EmployeeEntity employee = employeeRepository.findById(employeeDuty.getEmployee().getId())
                 .orElseThrow(EmployeeNotFoundException::new);
 
         //Send mail

@@ -120,9 +120,7 @@ class EmployeeServiceImplTest {
 
     @Test
     void updateEmployeeWithInvalidIdSuppliedException() {
-        InvalidIdSuppliedException thrown = Assertions.assertThrows(InvalidIdSuppliedException.class, () -> {
-            employeeService.updateEmployee(new Employee());
-        }, "Invalid Id supplied exception was expected");
+        InvalidIdSuppliedException thrown = Assertions.assertThrows(InvalidIdSuppliedException.class, () -> employeeService.updateEmployee(new Employee()), "Invalid Id supplied exception was expected");
 
         Assertions.assertEquals("Invalid Id Supplied", thrown.getMessage());
 

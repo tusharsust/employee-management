@@ -2,6 +2,7 @@ package com.softcode.employeemanagement.api;
 
 import com.softcode.employeemanagement.model.Employee;
 import com.softcode.employeemanagement.model.PutEmployeeRequest;
+import com.softcode.employeemanagement.model.UpdateDeviceTokenDto;
 import com.softcode.employeemanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,12 @@ public class EmployeesApiController implements EmployeesApi {
     }
 
     @Override
-    public ResponseEntity<String> postUpdateEmployeeDeviceToken(@Valid String deviceToken) {
-        return new ResponseEntity<>(employeeService.updateDeviceToken(deviceToken), HttpStatus.OK);
+    public ResponseEntity<String> postUpdateEmployeeDeviceToken(@Valid UpdateDeviceTokenDto updateDeviceToken) {
+        return new ResponseEntity<>(employeeService.updateDeviceToken(updateDeviceToken), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Employee> getEmployeeProfile() {
+        return new ResponseEntity<>(employeeService.getEmployeeDetails(), HttpStatus.OK);
     }
 }

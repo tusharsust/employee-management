@@ -1,10 +1,12 @@
 package com.softcode.employeemanagement.service.impl;
 
 import com.softcode.employeemanagement.entity.EmployeeEntity;
+import com.softcode.employeemanagement.entity.UserEntity;
 import com.softcode.employeemanagement.exception.APIException;
 import com.softcode.employeemanagement.exception.EmployeeNotFoundException;
 import com.softcode.employeemanagement.exception.InvalidIdSuppliedException;
 import com.softcode.employeemanagement.model.Employee;
+import com.softcode.employeemanagement.model.UpdateDeviceTokenDto;
 import com.softcode.employeemanagement.repository.EmployeeRepository;
 import com.softcode.employeemanagement.repository.UserRepository;
 import com.softcode.employeemanagement.security.JwtTokenProvider;
@@ -80,21 +82,32 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public String updateDeviceToken(String deviceToken) {
+    public String updateDeviceToken(UpdateDeviceTokenDto updateDeviceTokenDto) {
 
             EmployeeEntity employee = JwtTokenProvider.getCurrentUserLogin()
                     .flatMap(userRepository::findByEmail)
                     .flatMap(employeeRepository::findByUser)
                     .orElseThrow(EmployeeNotFoundException::new);
 
-        if (deviceToken.isEmpty()) {
+        if (updateDeviceTokenDto.getDeviceToken().isEmpty()) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Device Token Invalid");
         }
 
-        employee.setDeviceToken(deviceToken);
+        employee.setDeviceToken(updateDeviceTokenDto.getDeviceToken());
         employeeRepository.save(employee);
 
         return "Device token saved successfully!!";
+    }
+
+    @Override
+    public Employee getEmployeeDetails() {
+
+        String email = JwtTokenProvider.getCurrentUserLogin().orElseThrow(EmployeeNotFoundException::new);
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(EmployeeNotFoundException::new);
+        EmployeeEntity employeeEntity = employeeRepository.findByUser(user).orElseThrow(EmployeeNotFoundException::new);
+        Employee employee = mapToDto(employeeEntity);
+        employee.setEmail(user.getEmail());
+        return employee;
     }
 
     private Employee mapToDto(EmployeeEntity employeeEntity) {
